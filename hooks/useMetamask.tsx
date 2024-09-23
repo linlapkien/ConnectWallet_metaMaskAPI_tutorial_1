@@ -1,15 +1,15 @@
-import React, { useEffect, type PropsWithChildren } from "react";
+import React, { type PropsWithChildren } from 'react';
 
-type ConnectAction = { type: "connect"; wallet: string; balance: string };
-type DisconnectAction = { type: "disconnect" };
+type ConnectAction = { type: 'connect'; wallet: string; balance: string };
+type DisconnectAction = { type: 'disconnect' };
 type PageLoadedAction = {
-  type: "pageLoaded";
+  type: 'pageLoaded';
   isMetamaskInstalled: boolean;
   wallet: string | null;
   balance: string | null;
 };
-type LoadingAction = { type: "loading" };
-type IdleAction = { type: "idle" };
+type LoadingAction = { type: 'loading' };
+type IdleAction = { type: 'idle' };
 
 type Action =
   | ConnectAction
@@ -20,7 +20,7 @@ type Action =
 
 type Dispatch = (action: Action) => void;
 
-type Status = "loading" | "idle" | "pageNotLoaded";
+type Status = 'loading' | 'idle' | 'pageNotLoaded';
 
 type State = {
   wallet: string | null;
@@ -32,40 +32,44 @@ type State = {
 const initialState: State = {
   wallet: null,
   isMetamaskInstalled: false,
-  status: "loading",
+  status: 'loading',
   balance: null,
 } as const;
 
+// This is a reducer function that handles the state transitions based on the actions dispatched.
 function metamaskReducer(state: State, action: Action): State {
   switch (action.type) {
-    case "connect": {
+    //connect: Sets the wallet and balance from the action payload, and changes the status to "idle".
+    case 'connect': {
       const { wallet, balance } = action;
-      const newState = { ...state, wallet, balance, status: "idle" } as State;
+      const newState = { ...state, wallet, balance, status: 'idle' } as State;
       const info = JSON.stringify(newState);
-      window.localStorage.setItem("metamaskState", info);
+      window.localStorage.setItem('metamaskState', info);
 
       return newState;
     }
-    case "disconnect": {
-      window.localStorage.removeItem("metamaskState");
+    //disconnect: Clears the wallet and balance, indicating the user has disconnected.
+    case 'disconnect': {
+      window.localStorage.removeItem('metamaskState');
       if (typeof window.ethereum !== undefined) {
-        window.ethereum.removeAllListeners(["accountsChanged"]);
+        window.ethereum.removeAllListeners(['accountsChanged']);
       }
       return { ...state, wallet: null, balance: null };
     }
-    case "pageLoaded": {
+    //pageLoaded: Updates whether MetaMask is installed and sets the status to "idle".
+    case 'pageLoaded': {
       const { isMetamaskInstalled, balance, wallet } = action;
-      return { ...state, isMetamaskInstalled, status: "idle", wallet, balance };
+      return { ...state, isMetamaskInstalled, status: 'idle', wallet, balance };
     }
-    case "loading": {
-      return { ...state, status: "loading" };
+    case 'loading': {
+      return { ...state, status: 'loading' };
     }
-    case "idle": {
-      return { ...state, status: "idle" };
+    case 'idle': {
+      return { ...state, status: 'idle' };
     }
 
     default: {
-      throw new Error("Unhandled action type");
+      throw new Error('Unhandled action type');
     }
   }
 }
@@ -88,7 +92,7 @@ function MetamaskProvider({ children }: PropsWithChildren) {
 function useMetamask() {
   const context = React.useContext(MetamaskContext);
   if (context === undefined) {
-    throw new Error("useMetamask must be used within a MetamaskProvider");
+    throw new Error('useMetamask must be used within a MetamaskProvider');
   }
   return context;
 }
