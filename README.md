@@ -1,5 +1,7 @@
 ## Web3 Unleashed
 
+Free to learn this document via [Youtube](https://www.youtube.com/watch?v=vQVletnhLVk) - Read tutor [here](https://dev.to/metamask/web3-unleashed-the-metamask-api-1cnj)
+
 Basic Next.js application to be used in a stream for Web3 Unleashed.
 
 Branches will be created with stages for the rest of the implementation
